@@ -64,7 +64,7 @@ using namespace std;
     }
 
 
-    Conversation& Conversation::operator=(Conversation&& other) noexcept{
+    Conversation& Conversation::operator=(Conversation&& other) noexcept{ //move assignment operator
         if(this != &other){
             delete[] data_; //frees the space in memory from data_
             data_ = other.data_;
