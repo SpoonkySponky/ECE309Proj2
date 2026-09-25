@@ -4,6 +4,9 @@
 // arguments" and §3).
 
 #include "harness/harness.h"
+#include "core/conversation.h"
+#include "core/message.h"
+#include "core/sentinel_scanner.h"
 #include "model/scripted_client.h"
 #include <iostream>
 #include <fstream>

@@ -1,12 +1,9 @@
 #include <stdexcept>
-#include "core\conversation.h"
-#include "core/message.h"
+#include "core/conversation.h"
 using namespace std;
 
-class Conversation {
-public:
     // Empty conversation: size() == 0, no allocation yet.
-    Conversation(){
+    Conversation::Conversation(){
         data_ = nullptr;
         size_ = 0;
         capacity_ = 0;
@@ -14,13 +11,13 @@ public:
 
     // Releases all owned Message storage. No effect if already empty
     // (e.g. moved-from).
-    ~Conversation(){    //destructor
+    Conversation::~Conversation(){    //destructor
         delete[] data_;
     };
 
     // Deep copy: allocates its own buffer and copies every Message.
     // this->begin() must differ from other.begin() afterward.
-    Conversation(const Conversation& other){    //copy constructor
+    Conversation::Conversation(const Conversation& other){    //copy constructor
         this->size_ = other.size_;  
         this->capacity_ = other.capacity_;
         if(other.capacity_ == 0){ //if there is nothing in the array, no need to copy!
@@ -34,7 +31,7 @@ public:
         
     }
 
-    Conversation& operator=(const Conversation& other){ //assignment operator
+    Conversation& Conversation::operator=(const Conversation& other){ //assignment operator
         if(this != &other){
             delete[] data_; //frees the space in memory from data_
             size_ = other.size_;
@@ -55,7 +52,7 @@ public:
 
     // Steals other's buffer — no per-element copying. Afterward, other
     // must be left valid and empty (safe to destroy or reassign).
-    Conversation(Conversation&& other) noexcept{ //move constructor time!
+    Conversation::Conversation(Conversation&& other) noexcept{ //move constructor time!
         data_ = other.data_;    //steals the address of other.data_
         size_ = other.size_;     //steals both size and capacity of other
         capacity_ = other.capacity_;
@@ -67,7 +64,7 @@ public:
     }
 
 
-    Conversation& operator=(Conversation&& other) noexcept{
+    Conversation& Conversation::operator=(Conversation&& other) noexcept{
         if(this != &other){
             delete[] data_; //frees the space in memory from data_
             data_ = other.data_;
@@ -84,7 +81,7 @@ public:
     // Appends m, growing the backing array if needed. Amortized O(1) —
     // document and justify your growth strategy in the design log
     // (see Appendix C if you want a refresher first).
-    void append(Message m){
+    void Conversation::append(Message m){
         std::size_t newCapacity = capacity_; //makes new capacity so the code is easier to read
         if(size_ == newCapacity){ //if size is equal to capacity, that means capacity needs to grow
             if(newCapacity == 0){ //if capacity is empty,
@@ -107,13 +104,13 @@ public:
     }
 
     // Number of messages currently stored.
-    std::size_t size() const noexcept{
+    std::size_t Conversation::size() const noexcept{
         return size_;
     }
 
     // Bounds-checked access. Decide what happens on i >= size() (throw,
     // assert, whatever you pick) and test that behavior explicitly.
-    const Message& at(std::size_t i) const{
+    const Message& Conversation::at(std::size_t i) const{
         if (i >= size_) {
         throw std::out_of_range("This is out of range :(");
     }
@@ -122,15 +119,9 @@ public:
 
     // Range-for iteration, oldest message first. begin() == end() when
     // size() == 0.
-    const Message* begin() const noexcept{
+    const Message* Conversation::begin() const noexcept{
         return data_;
     }
-    const Message* end()   const noexcept{
+    const Message* Conversation::end()   const noexcept{
         return data_ + size_;
     }
-
-private:
-    Message*    data_ = nullptr;
-    std::size_t size_ = 0;
-    std::size_t capacity_ = 0;
-};

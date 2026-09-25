@@ -1,3 +1,6 @@
+#pragma once
+#include <string>
+
 enum class Role { System, User, Assistant };
 
 class Message {
@@ -6,7 +9,7 @@ public:
     // Needed so Conversation can allocate raw array slots before
     // append() fills them in.
     Message(){
-        role_ = Role::system;
+        role_ = Role::System;
         content_ = "";
     }
 
@@ -16,7 +19,7 @@ public:
     }
 
     Role               role()    const noexcept{
-        return role;
+        return role_;
     };  // Who sent this message.
     const std::string& content() const noexcept{
         return content_;
