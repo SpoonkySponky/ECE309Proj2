@@ -15,17 +15,40 @@ public:
         string maybeText = pending_; //maybeText holds pending_ which is the text that has
                                      //some of the end string we're looking for
         maybeText.append(chunk); //appends the rest of the message chunk
+        int foundPos = maybeText.find(sentinel_); //find the end text
+        if(foundPos != std::string::npos){ //if the end text is actually found...
+            string safeText = maybeText.substr(0, foundPos);//keeps the text from 0 to end point
+            pending_ = ""; //clears out pending
 
-        if(contains.maybeText(sentinel_)){ //if the evil end text is actually found...
-            endLocation = maybeText.find(sentinel_);//where is it?
-            string safeText = maybeText.subtr(0, endLocation);//keeps the text from 0 to evil point
-            return safeText;
+            Out result;                       
+            result.safe_text = safeText;      
+            result.sentinel_found = true;     
+            return result; 
+        }else{ //if the end text isn't found, it may just be a small chunk of it
+               //hold onto some characters in case the end string continues in the next chunk
+            int holdOntoText = sentinel_.size() - 1;
+            if (holdOntoText > maybeText.size()) { //checks to make sure holdOntoText isn't larger
+                holdOntoText = maybeText.size();   //than maybeText, else set them equal
+            }
+
+            int newSafeText = maybeText.size() - holdOntoText; //this subtracts the text held onto
+                                                            //because it contains some of the end string
+                                                            //so the new stuff is confirmed safe
+
+            string safeText = maybeText.substr(0, newSafeText); //safeText is now the new bit of safe text
+            pending_ = maybeText.substr(newSafeText); //sets pending_
+            Out result;                       
+            result.safe_text = safeText;      
+            result.sentinel_found = false;     
+            return result; 
         }
     }
 
     // Call once, after the stream ends, to release any text still
     // being held back.
-    Out flush();
+    Out flush(){
+        ~pending_;
+    }
 
 private:
     std::string sentinel_;
