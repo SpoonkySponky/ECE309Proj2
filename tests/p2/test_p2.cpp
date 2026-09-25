@@ -16,7 +16,11 @@
 
 #include <cassert>
 
-int main() {
-    // TODO: write your tests here.
-    return 0;
+//Handle empty conversations without out-of-bounds access.
+void TestEmptyConversationBounds(void){ //Test 1 
+    Conversation conversation;
+
+    assert(conversation.size() == 0);
+    assert(conversation.begin() == conversation.end());
+    
 }
